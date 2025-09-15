@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmation de Commande - Mi-Shop{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --card-gradient: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        --text-primary: #2d3748;
+        --text-secondary: #4a5568;
+        --border-color: rgba(255,255,255,0.2);
+        --shadow-soft: 0 10px 40px rgba(0,0,0,0.1);
+        --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--primary-gradient);
+        min-height: 100vh;
+        color: var(--text-primary);
+    }
+
+    .confirmation-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .confirmation-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 3rem;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-color);
+        text-align: center;
+        animation: scaleIn 0.6s ease-out 0.2s both;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--success-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: bounceIn 0.8s ease-out 0.4s both;
+    }
+
+    .success-icon svg {
+        width: 40px;
+        height: 40px;
+        color: white;
+    }
+
+    .confirmation-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        animation: slideInDown 0.6s ease-out 0.6s both;
+    }
+
+    .confirmation-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        animation: slideInUp 0.6s ease-out 0.8s both;
+    }
+
+    .order-details {
+        background: var(--card-gradient);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        border: 1px solid var(--border-color);
+        animation: slideInLeft 0.6s ease-out 1s both;
+    }
+
+    .order-number {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .order-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-item {
+        text-align: left;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        animation: slideInUp 0.6s ease-out 1.2s both;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-2px);
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+
+    .status-success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .confirmation-card {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+        }
+
+        .order-info {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .confirmation-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .confirmation-title {
+            font-size: 1.8rem;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .success-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+    }
+</style>
+
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="success-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <h1 class="confirmation-title">Commande Confirmée !</h1>
+        <p class="confirmation-subtitle">
+            Merci pour votre achat ! Votre commande a été reçue et est en cours de traitement.
+            Vous recevrez un email de confirmation sous peu.
+        </p>
+
+        <div class="order-details">
+            <div class="order-number">Commande</div>
+            
+            <div class="order-info">
+                <div class="info-item">
+                    <div class="info-label">Date de commande</div>
+                    <div class="info-value">{{ commande.date_commande|date:"d/m/Y à H:i" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Montant total</div>
+                    <div class="info-value">{{ total }} FCFA</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Méthode de paiement</div>
+                    <div class="info-value">
+                        {% if commande.paiements.exists %}
+                            {% with commande.paiements.first as paiement %}
+                                {% if paiement.methode == "stripe" %}
+                                    Carte bancaire
+                                {% elif paiement.methode == "cinetpay" %}
+                                    Mobile Money
+                                {% elif paiement.methode == "orange_money_whatsapp" %}
+                                    Orange Money (WhatsApp)
+                                {% else %}
+                                    {{ paiement.methode|default:"Non spécifié" }}
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            Non spécifié
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Statut</div>
+                    <div class="info-value">
+                        {% if commande.statut == "en_attente" %}
+                            <span class="status-badge status-pending">En attente</span>
+                        {% elif commande.statut == "confirmee" %}
+                            <span class="status-badge status-success">Confirmée</span>
+                        {% else %}
+                            <span class="status-badge status-pending">{{ commande.statut|title }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'accueil' %}" class="btn btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                Retour à l'accueil
+            </a>
+            <a href="#" class="btn btn-secondary" onclick="window.print(); return false;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                Imprimer
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Animation au scroll pour les éléments
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
+        }
+    });
+}, observerOptions);
+
+// Observer tous les éléments animés
+document.addEventListener('DOMContentLoaded', () => {
+    const animatedElements = document.querySelectorAll('.confirmation-card > *');
+    animatedElements.forEach(el => observer.observe(el));
+});
+</script>
+{% endblock %}

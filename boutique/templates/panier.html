@@ -1,0 +1,734 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* Ajout des polices Google Fonts et variables CSS modernes */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+    
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+        --warning-gradient: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+        --border-radius: 16px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    /* Container principal avec animations d'entrée */
+    .cart-container { 
+        margin-top: 80px;
+        padding: 20px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Titre principal avec gradient et animation */
+    .cart-title-main {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: slideInDown 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Cards de panier redesignées avec animations avancées */
+    .cart-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 25px;
+        padding: 20px;
+        transition: var(--transition);
+        cursor: grab;
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cart-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s;
+    }
+
+    .cart-card:hover::before {
+        left: 100%;
+    }
+
+    .cart-card.visible { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        animation: cardSlideIn 0.6s ease-out;
+    }
+
+    @keyframes cardSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        50% {
+            transform: translateY(-5px) scale(1.02);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .cart-card:hover { 
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--card-shadow-hover);
+    }
+
+    .cart-card.dragging { 
+        opacity: 0.8; 
+        transform: scale(1.05) rotate(2deg);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        cursor: grabbing;
+        z-index: 1000;
+    }
+
+    /* Images produit avec effets avancés */
+    .product-image-container {
+        position: relative;
+        min-width: 140px;
+        height: 120px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+    }
+
+    .cart-card img { 
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+        border-radius: 12px;
+    }
+
+    .cart-card img:hover { 
+        transform: scale(1.1) rotate(2deg);
+    }
+
+    /* Contenu des cards avec typographie améliorée */
+    .cart-card-body { 
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .cart-title { 
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600; 
+        font-size: 1.2rem; 
+        margin-bottom: 8px;
+        color: #2d3748;
+        line-height: 1.4;
+    }
+
+    .cart-price { 
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    /* Contrôles de quantité stylisés */
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .quantity-input { 
+        max-width: 80px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-weight: 600;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .quantity-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    /* Boutons d'action redesignés */
+    .btn-action { 
+        border: none;
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-update {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .btn-remove {
+        background: var(--danger-gradient);
+        color: white;
+    }
+
+    .btn-action:hover { 
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .btn-action:active {
+        transform: translateY(-1px);
+    }
+
+    /* Section total redesignée */
+    .cart-summary {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        margin-top: 30px;
+        box-shadow: var(--card-shadow);
+        animation: slideInUp 0.8s ease-out 0.4s both;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cart-total { 
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.8rem; 
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Bouton commander avec animations */
+    .btn-commander {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 12px;
+        padding: 15px 40px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .btn-commander::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn-commander:hover::before {
+        left: 100%;
+    }
+
+    .btn-commander:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Zone de suppression améliorée */
+    .trash-zone {
+        border: 3px dashed #fc466b;
+        border-radius: var(--border-radius);
+        padding: 40px;
+        text-align: center;
+        color: #fc466b;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-top: 40px;
+        transition: var(--transition);
+        background: rgba(252, 70, 107, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .trash-zone::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, rgba(252, 70, 107, 0.1), transparent);
+        transition: all 0.3s ease;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+    }
+
+    .trash-zone.over {
+        background: rgba(252, 70, 107, 0.15);
+        border-color: #e53e3e;
+        transform: scale(1.02);
+    }
+
+    .trash-zone.over::before {
+        width: 200px;
+        height: 200px;
+    }
+
+    /* État panier vide */
+    .empty-cart {
+        text-align: center;
+        padding: 60px 20px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .empty-cart-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.6;
+    }
+
+    .empty-cart-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        color: #718096;
+        margin-bottom: 30px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .cart-container {
+            margin-top: 60px;
+            padding: 15px;
+        }
+
+        .cart-title-main {
+            font-size: 2rem;
+        }
+
+        .cart-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .product-image-container {
+            margin: 0 auto 15px;
+        }
+
+        .quantity-controls {
+            justify-content: center;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cart-title-main {
+            font-size: 1.8rem;
+        }
+
+        .cart-card {
+            padding: 15px;
+        }
+
+        .btn-commander {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+    }
+
+    /* Animations de chargement */
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .loading {
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<div class="container cart-container">
+    <!-- Titre principal amélioré -->
+    <h1 class="cart-title-main">🛒 Mon Panier</h1>
+
+    {% if items %}
+    <div id="cart-list" class="row">
+        {% for item in items %}
+        <div class="col-lg-6 col-md-12 mb-4" draggable="true" data-item-id="{{ item.id }}">
+            <div class="cart-card d-flex">
+                <!-- Container d'image amélioré -->
+                <div class="product-image-container">
+                    {% if item.produit.image %}
+                        <img src="{{ item.produit.image.url }}" alt="{{ item.produit.nom }}">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="cart-card-body">
+                    <div class="cart-title">{{ item.produit.nom }}</div>
+                    <div class="cart-price">
+                        {% if item.produit.prix_promo %}
+                            {{ item.produit.prix_promo }} FCFA
+                        {% else %}
+                            {{ item.produit.prix }} FCFA
+                        {% endif %}
+                    </div>
+
+                    <!-- Contrôles de quantité améliorés -->
+                    <form method="post" action="{% url 'maj_quantite' item.id %}" class="quantity-controls">
+                        {% csrf_token %}
+                        <label for="qty-{{ item.id }}" class="visually-hidden">Quantité</label>
+                        <input type="number" 
+                               id="qty-{{ item.id }}"
+                               name="quantite" 
+                               value="{{ item.quantite }}" 
+                               min="1" 
+                               class="form-control quantity-input"
+                               onchange="this.form.submit()">
+                        <button type="submit" class="btn btn-action btn-update">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </form>
+
+                    <!-- Bouton de suppression amélioré -->
+                    <form method="post" action="{% url 'supprimer_du_panier' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-action btn-remove" onclick="return confirm('Êtes-vous sûr de vouloir retirer cet article ?')">
+                            <i class="fas fa-trash-alt"></i> Retirer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Section résumé améliorée -->
+    <div class="cart-summary">
+        <div class="cart-total">Total : {{ total }} FCFA</div>
+        <button onclick="proceedToCheckout()" class="btn btn-commander">
+            <i class="fas fa-shopping-cart me-2"></i>
+            Passer la commande
+        </button>
+    </div>
+
+    <!-- Zone de suppression améliorée -->
+    <div id="trash-zone" class="trash-zone">
+        <i class="fas fa-trash-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
+        <div>Glissez un article ici pour le supprimer</div>
+    </div>
+
+    {% else %}
+        <!-- État panier vide amélioré -->
+        <div class="empty-cart">
+            <div class="empty-cart-icon">🛒</div>
+            <div class="empty-cart-text">Votre panier est vide</div>
+            <a href="{% url 'accueil' %}" class="btn btn-commander" style="width: auto; padding: 12px 30px;">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Continuer mes achats
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation d'apparition des cartes avec délai progressif
+        const cards = document.querySelectorAll('.cart-card');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, index) => {
+                if(entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, {threshold: 0.1});
+        
+        cards.forEach(card => observer.observe(card));
+
+        // Système de drag & drop amélioré
+        let dragged = null;
+        const cartList = document.getElementById('cart-list');
+        const trashZone = document.getElementById('trash-zone');
+
+        if (cartList && trashZone) {
+            // Événements de drag
+            cartList.addEventListener('dragstart', (e) => {
+                if (e.target.closest('[draggable="true"]')) {
+                    dragged = e.target.closest('[draggable="true"]');
+                    dragged.querySelector('.cart-card').classList.add('dragging');
+                    e.dataTransfer.effectAllowed = "move";
+                    
+                    // Animation de la zone de suppression
+                    setTimeout(() => {
+                        trashZone.style.display = 'block';
+                        trashZone.style.animation = 'slideInUp 0.3s ease-out';
+                    }, 100);
+                }
+            });
+
+            cartList.addEventListener('dragend', (e) => {
+                if (dragged) {
+                    dragged.querySelector('.cart-card').classList.remove('dragging');
+                    dragged = null;
+                    trashZone.classList.remove('over');
+                    
+                    // Masquer la zone de suppression
+                    setTimeout(() => {
+                        trashZone.style.animation = 'fadeOut 0.3s ease-out';
+                    }, 1000);
+                }
+            });
+
+            // Événements de la zone de suppression
+            trashZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                trashZone.classList.add('over');
+            });
+
+            trashZone.addEventListener('dragleave', (e) => {
+                if (!trashZone.contains(e.relatedTarget)) {
+                    trashZone.classList.remove('over');
+                }
+            });
+
+            trashZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (dragged) {
+                    const itemId = dragged.getAttribute('data-item-id');
+                    if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+                        // Animation de suppression
+                        dragged.style.animation = 'fadeOut 0.5s ease-out';
+                        setTimeout(() => {
+                            window.location.href = `/panier/supprimer/${itemId}/`;
+                        }, 500);
+                    }
+                }
+                trashZone.classList.remove('over');
+            });
+        }
+
+        // Mise à jour automatique de la quantité
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+            let timeout;
+            input.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    if (this.value > 0) {
+                        this.closest('form').submit();
+                    }
+                }, 1000);
+            });
+        });
+
+        // Animation des boutons
+        const actionButtons = document.querySelectorAll('.btn-action');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Effet de ripple
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Fonction pour procéder au checkout
+        window.proceedToCheckout = function() {
+            const button = document.querySelector('.btn-commander');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                window.location.href = "{% url 'passer_commande' %}";
+            }, 1000);
+        };
+
+        // Animation CSS pour le ripple
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Notification de mise à jour du panier
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+            showNotification('Panier mis à jour avec succès !', 'success');
+        }
+
+        // Fonction de notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                animation: slideInRight 0.5s ease-out;
+                min-width: 300px;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutRight 0.5s ease-out';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 3000);
+        }
+
+        // Animation CSS pour les notifications
+        const notificationStyle = document.createElement('style');
+        notificationStyle.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(notificationStyle);
+    });
+</script>
+{% endblock %}

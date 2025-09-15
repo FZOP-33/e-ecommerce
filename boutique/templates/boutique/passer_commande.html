@@ -1,0 +1,658 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Ajout des polices Google Fonts et variables CSS modernes -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --light-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    --shadow-soft: 0 10px 40px rgba(0,0,0,0.1);
+    --shadow-hover: 0 20px 60px rgba(0,0,0,0.15);
+    --border-radius: 16px;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body {
+    background: var(--light-bg);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Titre principal avec animation et logo */
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInDown 0.8s ease-out;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    font-weight: 400;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* Logo e-commerce moderne */
+.ecommerce-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    animation: bounceIn 1s ease-out;
+    box-shadow: var(--shadow-soft);
+}
+
+.ecommerce-logo::before {
+    content: "🛍️";
+    font-size: 1.8rem;
+    animation: pulse 2s infinite;
+}
+
+/* Cards modernes pour le panier */
+.cart-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2rem;
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.address-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    animation: slideInRight 0.8s ease-out;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    font-size: 1.2rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Items du panier améliorés */
+.cart-item {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    animation: fadeInUp 0.6s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.cart-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.cart-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.cart-item:hover::before {
+    opacity: 1;
+}
+
+.cart-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: var(--transition);
+}
+
+.cart-item:hover .cart-thumb {
+    transform: scale(1.05);
+}
+
+.product-info h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.product-details {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.delivery-info {
+    color: #28a745;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.item-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: var(--success-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Total amélioré */
+.total-section {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin-top: 2rem;
+    animation: bounceIn 0.8s ease-out 0.4s both;
+    box-shadow: var(--shadow-soft);
+}
+
+.total-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Cards d'adresse modernes */
+.address-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.address-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: var(--transition);
+}
+
+.address-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.address-card:hover::before {
+    left: 100%;
+}
+
+.address-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.address-details {
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+/* Alerte d'information stylée */
+.payment-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    animation: slideInUp 0.6s ease-out;
+    box-shadow: var(--shadow-soft);
+}
+
+.payment-info .fa-credit-card {
+    color: #1976d2;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* Boutons modernes */
+.btn-modern {
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: var(--transition);
+}
+
+.btn-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    color: white;
+}
+
+.btn-modern:hover::before {
+    left: 100%;
+}
+
+.btn-success-modern {
+    background: var(--success-gradient);
+}
+
+.btn-payment {
+    background: var(--warning-gradient);
+    font-size: 1.2rem;
+    padding: 1.2rem 2.5rem;
+    animation: pulse 2s infinite;
+}
+
+/* Formulaire d'ajout d'adresse moderne */
+.add-address-form {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-top: 2rem;
+    animation: slideInUp 0.8s ease-out;
+    box-shadow: var(--shadow-soft);
+}
+
+.form-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .cart-section,
+    .address-section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .cart-item {
+        padding: 1rem;
+    }
+    
+    .cart-thumb {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .btn-modern {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .total-amount {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .cart-section,
+    .address-section,
+    .add-address-form {
+        padding: 1rem;
+    }
+}
+</style>
+
+<div class="container mt-5">
+    <!-- Header moderne avec logo -->
+    <div class="page-header">
+        <div class="ecommerce-logo"></div>
+        <h1 class="page-title">Finaliser ma commande</h1>
+        <p class="page-subtitle">Vérifiez vos articles et choisissez votre adresse de livraison</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Colonne gauche: Panier amélioré -->
+        <div class="col-lg-6">
+            <div class="cart-section">
+                <h4 class="section-title">
+                    <span class="section-icon">🛒</span>
+                    Récapitulatif du panier
+                </h4>
+                
+                {% for item in items %}
+                <div class="cart-item">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ item.produit.image.url }}" alt="{{ item.produit.nom }}" class="cart-thumb me-3">
+                        <div class="product-info flex-grow-1">
+                            <h6>{{ item.produit.nom }}</h6>
+                            <div class="product-details">{{ item.quantite }} x {{ item.produit.prix_promo|default:item.produit.prix }} FCFA</div>
+                            <div class="delivery-info">
+                                <i class="fa fa-truck"></i> Livraison estimée: 48h
+                            </div>
+                        </div>
+                        <div class="item-total">{{ item.get_total }} FCFA</div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="total-section">
+                    <div>Total de votre commande</div>
+                    <div class="total-amount">{{ total }} FCFA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne droite: Adresse améliorée -->
+        <div class="col-lg-6">
+            <div class="address-section">
+                <h4 class="section-title">
+                    <span class="section-icon">🏠</span>
+                    Adresse de livraison
+                </h4>
+
+                {% if adresses %}
+                <p class="text-muted mb-3">Sélectionnez une adresse ci-dessous pour poursuivre vers le paiement :</p>
+                
+                {% for adr in adresses %}
+                <div class="address-card" onclick="window.location.href='{% url 'confirmer_commande' adresse_id=adr.id %}'">
+                    <div class="address-name">{{ adr.nom_complet }} - {{ adr.telephone }}</div>
+                    <div class="address-details">{{ adr.adresse }}, {{ adr.ville }}, {{ adr.code_postal }}, {{ adr.pays }}</div>
+                </div>
+                {% endfor %}
+
+                <!-- Indication paiement stylée -->
+                <div class="payment-info">
+                    <i class="fa fa-credit-card"></i> 
+                    Après avoir choisi une adresse, vous pourrez cliquer sur <strong>"Payer maintenant"</strong> pour finaliser votre commande.
+                </div>
+
+                <!-- Bouton paiement moderne -->
+                {% if adresse_selectionnee %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'paiement' commande_id=commande.id %}" class="btn-modern btn-payment">
+                        <i class="fa fa-lock"></i> Payer maintenant
+                    </a>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <p class="text-muted">Vous n'avez pas encore d'adresse de livraison.</p>
+                {% endif %}
+
+                <!-- Formulaire d'ajout d'adresse moderne -->
+                <div class="add-address-form">
+                    <h6 class="form-title">
+                        <i class="fa fa-plus-circle"></i>
+                        Ajouter une nouvelle adresse
+                    </h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" name="add_adresse" class="btn-modern btn-success-modern w-100">
+                            <i class="fa fa-plus-circle"></i> Ajouter l'adresse
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript pour animations interactives -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des éléments au scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observer tous les éléments animés
+    document.querySelectorAll('.cart-item, .address-card, .add-address-form').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Animation hover sur les cards d'adresse
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Animation des boutons
+    document.querySelectorAll('.btn-modern').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Animation du logo
+    const logo = document.querySelector('.ecommerce-logo');
+    if (logo) {
+        setInterval(() => {
+            logo.style.transform = 'scale(1.1) rotate(5deg)';
+            setTimeout(() => {
+                logo.style.transform = 'scale(1) rotate(0deg)';
+            }, 200);
+        }, 3000);
+    }
+});
+</script>
+
+{% endblock %}

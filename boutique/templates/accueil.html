@@ -1,0 +1,582 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+    <!-- Carousel amélioré avec overlay et animations -->
+    <div id="carouselPromo" class="carousel slide mb-5 promo-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'boutique/image/collection.jpg' %}" class="d-block w-100 carousel-image" alt="Collection Exclusive">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="carousel-title">🌟 Collection Exclusive</h2>
+                    <p class="carousel-subtitle">Découvrez nos dernières tendances</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'boutique/image/habits.jpg' %}" class="d-block w-100 carousel-image" alt="Mode & Style">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="carousel-title">👗 Mode & Style</h2>
+                    <p class="carousel-subtitle">Élégance et confort réunis</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'boutique/image/sac-a-main5.jpg' %}" class="d-block w-100 carousel-image" alt="Accessoires Premium">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="carousel-title">👜 Accessoires Premium</h2>
+                    <p class="carousel-subtitle">Complétez votre look parfait</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselPromo" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselPromo" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+        </button>
+    </div>
+
+    <!-- Filtres stylisés avec icônes et scroll intelligent -->
+    <div class="filters-section mb-5" id="filters-anchor">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-filter me-2"></i>Filtrer les produits
+        </h3>
+        <form method="get" class="row g-3" id="filter-form">
+            <div class="col-md-6">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-tags me-2"></i>Catégorie
+                    </label>
+                    <!-- Ajout d'icônes spécifiques pour chaque catégorie et scroll intelligent -->
+                    <select name="categorie" class="form-select custom-select" id="category-select">
+                        <option value="">🏷️ Toutes les catégories</option>
+                        {% for c in categories %}
+                            <option value="{{ c.id }}" {% if c.id == categorie_active %}selected{% endif %}>
+                                {% if c.nom == "Électronique" %}📱
+                                {% elif c.nom == "Vêtements" %}👕
+                                {% elif c.nom == "Livres" %}📚
+                                {% elif c.nom == "Maison" %}🏠
+                                {% elif c.nom == "Beauté" %}💄
+                                {% elif c.nom == "Sport" %}⚽
+                                {% elif c.nom == "Jouets" %}🧸
+                                {% elif c.nom == "Automobile" %}🚗
+                                {% elif c.nom == "Jardin" %}🌱
+                                {% elif c.nom == "Musique" %}🎵
+                                {% elif c.nom == "Cuisine" %}🍳
+                                {% elif c.nom == "Bijoux" %}💎
+                                {% else %}🛍️{% endif %} {{ c.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-sort me-2"></i>Trier par
+                    </label>
+                    <!-- Ajout d'icônes pour les options de tri et scroll intelligent -->
+                    <select name="sort" class="form-select custom-select" id="sort-select">
+                        <option value="">📊 Trier par...</option>
+                        <option value="prix_asc" {% if tri_actif == "prix_asc" %}selected{% endif %}>💰 Prix croissant</option>
+                        <option value="prix_desc" {% if tri_actif == "prix_desc" %}selected{% endif %}>💎 Prix décroissant</option>
+                        <option value="nouveaux" {% if tri_actif == "nouveaux" %}selected{% endif %}>✨ Nouveautés</option>
+                        <option value="populaire" {% if tri_actif == "populaire" %}selected{% endif %}>🔥 Populaires</option>
+                        <option value="promo" {% if tri_actif == "promo" %}selected{% endif %}>🏷️ En promotion</option>
+                        <option value="stock" {% if tri_actif == "stock" %}selected{% endif %}>📦 En stock</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Grille de produits améliorée -->
+    {% if produits %}
+    <div class="products-section">
+        <h3 class="section-title mb-4">
+            <i class="fas fa-shopping-bag me-2"></i>Nos Produits
+        </h3>
+        <div class="row g-4">
+            {% for produit in produits %}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card product-card h-100">
+                    <div class="card-image-container">
+                        <img src="{{ produit.image.url }}" class="card-img-top product-image" alt="{{ produit.nom }}">
+                        {% if produit.prix_promo %}
+                            <div class="promo-badge">
+                                <i class="fas fa-percent me-1"></i>PROMO
+                            </div>
+                        {% endif %}
+                        {% if produit.stock == 0 %}
+                            <div class="stock-overlay">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Rupture
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title product-title">{{ produit.nom }}</h5>
+                        
+                        <div class="price-section mt-auto">
+                            {% if produit.prix_promo %}
+                                <div class="price-container">
+                                    <span class="old-price">{{ produit.prix }} FCFA</span>
+                                    <span class="new-price">{{ produit.prix_promo }} FCFA</span>
+                                </div>
+                            {% else %}
+                                <span class="current-price">{{ produit.prix }} FCFA</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-actions mt-3">
+                            <a href="{% url 'detail_produit' produit.id %}" class="btn btn-outline-primary btn-action">
+                                <i class="fas fa-eye me-1"></i>Détails
+                            </a>
+                            {% if produit.stock > 0 %}
+                                <button class="btn btn-success btn-action add-to-cart-btn" data-id="{{ produit.id }}">
+                                    <i class="fas fa-cart-plus me-1"></i>Ajouter
+                                </button>
+                            {% else %}
+                                <button class="btn btn-secondary btn-action" disabled>
+                                    <i class="fas fa-ban me-1"></i>Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+        <div class="alert alert-warning custom-alert">
+            <i class="fas fa-search me-2"></i>
+            Aucun produit trouvé pour vos critères de recherche.
+        </div>
+    {% endif %}
+
+</div>
+
+<!-- Styles CSS améliorés et responsive -->
+<style>
+/* Carousel Styles */
+.promo-carousel {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.carousel-image {
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.promo-carousel:hover .carousel-image {
+    transform: scale(1.02);
+}
+
+.carousel-caption {
+    background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4));
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.carousel-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+}
+
+.carousel-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* Filters Section */
+.filters-section {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.filter-group {
+    position: relative;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.custom-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.custom-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Product Cards */
+.product-card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1) rotate(2deg);
+}
+
+.promo-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+    animation: pulse 2s infinite;
+}
+
+.stock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.product-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.price-section {
+    margin: 15px 0;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #95a5a6;
+    font-size: 0.9rem;
+}
+
+.new-price {
+    color: #27ae60;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.current-price {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-outline-primary.btn-action {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+.btn-outline-primary.btn-action:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-success.btn-action:hover {
+    background: #219a52;
+    transform: translateY(-2px);
+}
+
+.custom-alert {
+    border-radius: 15px;
+    border: none;
+    padding: 20px;
+    font-size: 1.1rem;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .carousel-title {
+        font-size: 1.8rem;
+    }
+    
+    .carousel-subtitle {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .filters-section {
+        padding: 20px 15px;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
+    
+    .btn-action {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-image {
+        height: 250px;
+    }
+    
+    .product-title {
+        font-size: 1.1rem;
+    }
+    
+    .new-price, .current-price {
+        font-size: 1.1rem;
+    }
+}
+</style>
+
+<!-- JavaScript AJAX amélioré avec animations et scroll intelligent -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.add-to-cart-btn');
+    
+    const categorySelect = document.getElementById('category-select');
+    const sortSelect = document.getElementById('sort-select');
+    const filtersAnchor = document.getElementById('filters-anchor');
+
+    // Fonction de scroll intelligent
+    function smoothScrollToFilters() {
+        const offsetTop = filtersAnchor.offsetTop - 100; // 100px de marge
+        window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+        });
+    }
+
+    // Gestionnaire pour le changement de catégorie
+    categorySelect.addEventListener('change', function() {
+        // Animation de sélection
+        this.style.transform = 'scale(1.02)';
+        this.style.boxShadow = '0 0 20px rgba(52, 152, 219, 0.3)';
+        
+        setTimeout(() => {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+            
+            // Scroll intelligent avant soumission
+            smoothScrollToFilters();
+            
+            // Délai pour permettre le scroll puis soumission
+            setTimeout(() => {
+                this.form.submit();
+            }, 300);
+        }, 200);
+    });
+
+    // Gestionnaire pour le changement de tri
+    sortSelect.addEventListener('change', function() {
+        // Animation de sélection
+        this.style.transform = 'scale(1.02)';
+        this.style.boxShadow = '0 0 20px rgba(46, 204, 113, 0.3)';
+        
+        setTimeout(() => {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+            
+            // Scroll intelligent avant soumission
+            smoothScrollToFilters();
+            
+            // Délai pour permettre le scroll puis soumission
+            setTimeout(() => {
+                this.form.submit();
+            }, 300);
+        }, 200);
+    });
+
+    // Gestion des boutons d'ajout au panier (code existant amélioré)
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const produitId = this.getAttribute('data-id');
+            const csrfToken = '{{ csrf_token }}';
+            const btnEl = this;
+            const originalText = btnEl.innerHTML;
+
+            // Animation de chargement
+            btnEl.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Ajout...';
+            btnEl.disabled = true;
+
+            fetch("{% url 'ajouter_au_panier_ajax' 0 %}".replace('0', produitId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mettre à jour badge panier
+                    const badge = document.getElementById('cart-count');
+                    if (data.total_items > 0) {
+                        badge.style.display = 'inline-block';
+                        badge.textContent = data.total_items;
+                        badge.style.animation = 'pulse 0.5s ease';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    // Animation de succès
+                    btnEl.innerHTML = '<i class="fas fa-check me-1"></i>Ajouté !';
+                    btnEl.classList.remove('btn-success');
+                    btnEl.classList.add('btn-info');
+                    
+                    // Animation de la carte
+                    btnEl.closest('.product-card').style.animation = 'pulse 0.5s ease';
+                    
+                    setTimeout(() => { 
+                        btnEl.innerHTML = originalText;
+                        btnEl.classList.remove('btn-info');
+                        btnEl.classList.add('btn-success');
+                        btnEl.disabled = false;
+                    }, 1500);
+                } else {
+                    btnEl.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Erreur';
+                    btnEl.classList.add('btn-danger');
+                    setTimeout(() => {
+                        btnEl.innerHTML = originalText;
+                        btnEl.classList.remove('btn-danger');
+                        btnEl.disabled = false;
+                    }, 2000);
+                }
+            })
+            .catch(err => {
+                console.error('[v0] Erreur AJAX:', err);
+                btnEl.innerHTML = '<i class="fas fa-wifi me-1"></i>Réseau';
+                btnEl.classList.add('btn-warning');
+                setTimeout(() => {
+                    btnEl.innerHTML = originalText;
+                    btnEl.classList.remove('btn-warning');
+                    btnEl.disabled = false;
+                }, 2000);
+            });
+        });
+    });
+
+    // Animation d'apparition progressive des cartes
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+});
+</script>
+{% endblock %}

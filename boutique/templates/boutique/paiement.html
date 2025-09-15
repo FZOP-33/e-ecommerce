@@ -1,0 +1,570 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+/* Ajout des polices Google Fonts et variables CSS modernes */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --border-radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+/* Animations améliorées */
+.fade-in { 
+    opacity: 0; 
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    } 
+}
+
+.slide-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+@keyframes slideInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    animation: slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+}
+
+@keyframes slideInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Styles de conteneur améliorés */
+.payment-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 2rem;
+    margin: 2rem 0;
+}
+
+/* Titre avec gradient et icône */
+.payment-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.payment-title::before {
+    content: '💳';
+    position: absolute;
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(-50%); }
+    40% { transform: translateY(-60%); }
+    60% { transform: translateY(-55%); }
+}
+
+/* Cards de récapitulatif améliorées */
+.recap-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    color: white;
+    box-shadow: var(--card-shadow);
+}
+
+.recap-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.item-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    transform: translateY(0);
+}
+
+.item-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.total-section {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.total-amount {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Section de paiement améliorée */
+.payment-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+.payment-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Cards de méthodes de paiement améliorées */
+.payment-card { 
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer; 
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: var(--transition);
+}
+
+.payment-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: #667eea;
+}
+
+.payment-card:hover::before {
+    left: 100%;
+}
+
+.payment-card.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.payment-card input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 1rem;
+    accent-color: #667eea;
+}
+
+.payment-card label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Boutons WhatsApp améliorés */
+.whatsapp-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(37, 211, 102, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #25d366;
+}
+
+.whatsapp-btn {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    margin: 0.25rem;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);
+}
+
+/* Checkbox de confirmation améliorée */
+#confirm-box {
+    background: rgba(40, 167, 69, 0.1);
+    border: 2px solid #28a745;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+    transition: var(--transition);
+    transform: scale(0);
+}
+
+#confirm-box.show {
+    transform: scale(1);
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+.form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.form-check-label {
+    font-weight: 500;
+    color: #28a745;
+}
+
+/* Bouton de paiement amélioré */
+#payer-btn {
+    background: var(--success-gradient);
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(17, 153, 142, 0.3);
+}
+
+#payer-btn:not(:disabled):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(17, 153, 142, 0.4);
+}
+
+#payer-btn:disabled {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+    .payment-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    
+    .payment-title {
+        font-size: 2rem;
+    }
+    
+    .payment-title::before {
+        left: -40px;
+        font-size: 1.5rem;
+    }
+    
+    .item-card {
+        padding: 0.75rem;
+    }
+    
+    .payment-card {
+        padding: 1rem;
+    }
+    
+    #payer-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .payment-title::before {
+        display: none;
+    }
+    
+    .recap-title, .payment-section-title {
+        font-size: 1.25rem;
+    }
+    
+    .total-amount {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animations d'entrée échelonnées */
+.item-card:nth-child(1) { animation-delay: 0.1s; }
+.item-card:nth-child(2) { animation-delay: 0.2s; }
+.item-card:nth-child(3) { animation-delay: 0.3s; }
+.item-card:nth-child(4) { animation-delay: 0.4s; }
+
+.payment-card:nth-child(1) { animation-delay: 0.2s; }
+.payment-card:nth-child(2) { animation-delay: 0.4s; }
+.payment-card:nth-child(3) { animation-delay: 0.6s; }
+</style>
+
+<div class="container mt-4">
+    <div class="payment-container fade-in">
+        <h2 class="payment-title">Paiement de la commande #{{ commande.id }}</h2>
+
+        {% if error %}
+        <div class="alert alert-danger fade-in">{{ error }}</div>
+        {% endif %}
+
+        <div class="row">
+            <!-- Section récapitulatif améliorée -->
+            <div class="col-lg-6 mb-4">
+                <div class="recap-section slide-in-left">
+                    <h4 class="recap-title">🛒 Récapitulatif de votre commande</h4>
+                    {% for item in commande.lignes.all %}
+                    <div class="item-card fade-in">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ item.produit.image.url }}" class="item-image me-3" alt="{{ item.produit.nom }}">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1">{{ item.produit.nom }}</h6>
+                                <small class="opacity-75">{{ item.quantite }} × {{ item.prix_unitaire }} FCFA</small>
+                            </div>
+                            <span class="fw-bold fs-5">{{ item.get_total }} FCFA</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="total-section">
+                        <div class="total-amount">Total : {{ total }} FCFA</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section paiement améliorée -->
+            <div class="col-lg-6">
+                <div class="payment-section slide-in-right">
+                    <h4 class="payment-section-title">💰 Choisir le mode de paiement</h4>
+                    <form method="post" id="paiementForm" action="{% url 'paiement' commande.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                        <input type="hidden" name="total" value="{{ total }}">
+
+                        <!-- Stripe amélioré -->
+                        <div class="payment-card fade-in" data-method="carte">
+                            <label for="stripe" class="w-100">
+                                <input type="radio" name="methode" value="carte" id="stripe" required>
+                                💳 Carte Bancaire (Stripe)
+                            </label>
+                            <small class="d-block mt-2 opacity-75">Paiement sécurisé par carte bancaire</small>
+                        </div>
+
+                        <!-- CinetPay amélioré -->
+                        <div class="payment-card fade-in" data-method="cinetpay">
+                            <label for="cinetpay" class="w-100">
+                                <input type="radio" name="methode" value="cinetpay" id="cinetpay">
+                                📱 CinetPay (Mobile Money)
+                            </label>
+                            <small class="d-block mt-2 opacity-75">Orange Money, MTN Money, Moov Money</small>
+                        </div>
+
+                        <!-- WhatsApp amélioré -->
+                        <div class="payment-card fade-in" data-method="whatsapp">
+                            <label for="whatsapp" class="w-100">
+                                <input type="radio" name="methode" value="whatsapp" id="whatsapp">
+                                💬 Orange Money via WhatsApp
+                            </label>
+                            <div class="whatsapp-section">
+                                <small class="d-block mb-2">Contactez-nous avant de payer :</small>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for num in whatsapp_numbers %}
+                                    <a href="https://wa.me/{{ num }}?text={{ whatsapp_message|urlencode }}" 
+                                       target="_blank" 
+                                       class="btn btn-success whatsapp-btn">
+                                        💬 WhatsApp {{ num }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Case à cocher améliorée -->
+                        <div id="confirm-box" class="form-check">
+                            <input class="form-check-input" type="checkbox" name="confirme" id="confirme" disabled>
+                            <label for="confirme" class="form-check-label">
+                                ✅ J'ai discuté avec le support sur WhatsApp
+                            </label>
+                        </div>
+
+                        <!-- Bouton payer amélioré -->
+                        <button type="submit" id="payer-btn" class="btn btn-success btn-lg btn-pulse w-100 mt-4">
+                            <span class="me-2">🔒</span>
+                            Confirmer et Payer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const radios = document.querySelectorAll('input[name="methode"]');
+const confirmBox = document.getElementById('confirm-box');
+const payerBtn = document.getElementById('payer-btn');
+const confirme = document.getElementById('confirme');
+const paymentCards = document.querySelectorAll('.payment-card');
+const paiementForm = document.getElementById('paiementForm');
+
+// Initial: bouton actif pour Stripe / CinetPay
+payerBtn.disabled = false;
+
+radios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Retirer la classe selected de toutes les cards
+        paymentCards.forEach(card => card.classList.remove('selected'));
+        
+        // Ajouter la classe selected à la card parent
+        this.closest('.payment-card').classList.add('selected');
+        
+        if (this.value === "whatsapp") {
+            confirmBox.style.display = "block";
+            setTimeout(() => {
+                confirmBox.classList.add('show');
+            }, 10);
+            confirme.disabled = true;
+            payerBtn.disabled = true;
+            payerBtn.classList.remove('btn-pulse');
+        } else {
+            confirmBox.classList.remove('show');
+            setTimeout(() => {
+                confirmBox.style.display = "none";
+            }, 300);
+            payerBtn.disabled = false;
+            payerBtn.classList.add('btn-pulse');
+        }
+    });
+});
+
+document.querySelectorAll('.whatsapp-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        setTimeout(() => {
+            confirme.disabled = false;
+            confirme.parentElement.style.animation = 'pulse 0.5s ease-in-out';
+        }, 1000);
+    });
+});
+
+confirme.addEventListener('change', () => {
+    payerBtn.disabled = !confirme.checked;
+    if (confirme.checked) {
+        payerBtn.classList.add('btn-pulse');
+    } else {
+        payerBtn.classList.remove('btn-pulse');
+    }
+});
+
+paiementForm.addEventListener('submit', function(e) {
+    const selectedMethod = document.querySelector('input[name="methode"]:checked');
+    
+    if (!selectedMethod) {
+        e.preventDefault();
+        alert('Veuillez sélectionner une méthode de paiement');
+        return;
+    }
+    
+    // Pour WhatsApp, vérifier que la confirmation est cochée
+    if (selectedMethod.value === 'whatsapp' && !confirme.checked) {
+        e.preventDefault();
+        alert('Veuillez confirmer que vous avez contacté le support WhatsApp');
+        return;
+    }
+    
+    // Afficher le loading sur le bouton
+    payerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Traitement...';
+    payerBtn.disabled = true;
+    
+    // Pour Stripe et CinetPay, le formulaire sera soumis normalement
+    // La vue Django gérera la redirection vers les plateformes de paiement
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.fade-in');
+    elements.forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.1}s`;
+    });
+});
+</script>
+{% endblock %}

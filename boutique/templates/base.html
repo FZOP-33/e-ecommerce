@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi-Shop</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f59e0b;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --dark-bg: #1f2937;
+            --light-bg: #f8fafc;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: #ffffff;
+        }
+
+        /* Enhanced navbar with gradient background and better styling */
+        .navbar {
+            background: var(--gradient-primary) !important;
+            backdrop-filter: blur(10px);
+            border: none;
+            box-shadow: var(--shadow-lg);
+            padding: 0.75rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            color: white !important;
+        }
+
+        /* Modern logo design with CSS */
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '🛍️';
+            font-size: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+
+        /* Enhanced drawer menu with modern styling */
+        .drawer { 
+            height: 100%; 
+            width: 0; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15); 
+            overflow-y: auto; 
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-top: 60px; 
+            z-index: 2000;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .drawer a { 
+            padding: 12px 20px; 
+            text-decoration: none; 
+            font-size: 15px; 
+            font-weight: 500;
+            display: block; 
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 2px 12px;
+        }
+
+        .drawer a:hover { 
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateX(8px);
+        }
+
+        .drawer .closebtn { 
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            font-size: 28px;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .drawer .closebtn:hover {
+            color: var(--danger-color);
+        }
+
+        .drawer h6 { 
+            margin: 20px 20px 12px; 
+            color: var(--text-secondary); 
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .drawer details { 
+            padding: 6px 12px; 
+            margin: 4px 0;
+        }
+
+        .drawer summary { 
+            list-style: none; 
+            cursor: pointer; 
+            padding: 8px 8px; 
+            font-weight: 600; 
+            color: var(--text-primary);
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .drawer summary:hover {
+            background-color: var(--light-bg);
+        }
+
+        .drawer summary::-webkit-details-marker { 
+            display: none; 
+        }
+
+        .drawer ul { 
+            margin: 8px 0 12px 16px; 
+            padding-left: 0; 
+        }
+
+        .drawer li { 
+            margin: 6px 0; 
+        }
+
+        .drawer .prod-link { 
+            font-weight: 400; 
+            font-size: 14px; 
+            color: var(--text-secondary);
+            padding: 6px 12px;
+        }
+
+        /* Enhanced navbar elements styling */
+        .navbar .btn {
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .btn:hover {
+            background-color: rgba(255,255,255,0.2);
+            border-color: white;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .navbar .form-control {
+            border: 2px solid rgba(255,255,255,0.3);
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            font-weight: 500;
+        }
+
+        .navbar .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .navbar .form-control:focus {
+            border-color: white;
+            background-color: rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 0.2rem rgba(255,255,255,0.25);
+            color: white;
+        }
+
+        .navbar .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .navbar .nav-link:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            padding: 8px;
+        }
+
+        .navbar .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 50px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .dropdown-item:hover {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        /* Enhanced cart badge */
+        .badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Enhanced footer with modern styling */
+        footer { 
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #374151 100%);
+            color: white;
+            padding: 40px 0 20px; 
+            border-top: none;
+            margin-top: 60px;
+        }
+
+        footer h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer p, footer a {
+            color: #d1d5db;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .footer-logo { 
+            height: 50px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Enhanced carousel styling with modern design */
+        .carousel {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .carousel-item {
+            height: 400px;
+            background: var(--gradient-primary);
+            position: relative;
+        }
+
+        .carousel-item img {
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .carousel-caption {
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .carousel-caption h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .carousel-caption p {
+            font-size: 1.1rem;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-control-prev {
+            left: 20px;
+        }
+
+        .carousel-control-next {
+            right: 20px;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-indicators {
+            bottom: 20px;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            border: 2px solid rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-indicators .active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+
+        /* Enhanced product cards with modern styling and animations */
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .product-card .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            border-radius: 0;
+        }
+
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .product-card .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 250px);
+        }
+
+        .product-card .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .product-card .card-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .product-card .price {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .product-card .btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+
+        .product-card .btn:hover {
+            background: var(--gradient-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .product-card .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gradient-secondary);
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            z-index: 10;
+        }
+
+        /* Enhanced category icons in drawer with specific icons for each category */
+        .drawer .category-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .drawer summary:hover .category-icon {
+            background: var(--gradient-secondary);
+            transform: scale(1.1);
+        }
+
+        /* Category-specific icons */
+        .category-electronics .category-icon::before { content: '📱'; }
+        .category-clothing .category-icon::before { content: '👕'; }
+        .category-books .category-icon::before { content: '📚'; }
+        .category-home .category-icon::before { content: '🏠'; }
+        .category-sports .category-icon::before { content: '⚽'; }
+        .category-beauty .category-icon::before { content: '💄'; }
+        .category-toys .category-icon::before { content: '🧸'; }
+        .category-food .category-icon::before { content: '🍕'; }
+        .category-automotive .category-icon::before { content: '🚗'; }
+        .category-jewelry .category-icon::before { content: '💎'; }
+        .category-default .category-icon::before { content: '🛍️'; }
+
+        /* Product grid responsive layout */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Section headers styling */
+        .section-header {
+            text-align: center;
+            margin: 3rem 0 2rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Enhanced responsive design */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .drawer {
+                width: 280px !important;
+            }
+            
+            .navbar .form-control {
+                font-size: 14px;
+            }
+
+            .carousel-item {
+                height: 300px;
+            }
+
+            .carousel-caption h5 {
+                font-size: 1.5rem;
+            }
+
+            .carousel-caption p {
+                font-size: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .carousel-item {
+                height: 250px;
+            }
+
+            .carousel-caption {
+                padding: 1rem;
+            }
+
+            .carousel-caption h5 {
+                font-size: 1.25rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <!-- Enhanced drawer button with better styling -->
+    <button class="btn me-3" onclick="openDrawer()" aria-label="Ouvrir le menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Enhanced logo with modern CSS design -->
+    <a class="navbar-brand" href="{% url 'accueil' %}">
+      <div class="logo-icon"></div>
+      AMi-Shop
+    </a>
+
+    <!-- Search -->
+    <form class="d-flex ms-auto me-3" method="get" action="{% url 'accueil' %}">
+      <input class="form-control me-2" type="search" name="q" placeholder="Rechercher un produit..." aria-label="Search">
+      <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+
+    <!-- Right links -->
+    <ul class="navbar-nav align-items-center">
+        <!-- Panier -->
+        <li class="nav-item me-3 position-relative">
+          <a class="nav-link" href="{% url 'panier' %}">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
+                              {% if panier_count == 0 %}style="display:none"{% endif %}>
+              {{ panier_count }}
+            </span>
+            Panier
+          </a>
+        </li>
+
+      {% if user.is_authenticated %}
+        <!-- Utilisateur connecté -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle me-2"></i> {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'passer_commande' %}"><i class="fas fa-box me-2"></i> Mes commandes</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Déconnexion</a></li>
+          </ul>
+        </li>
+      {% else %}
+        <!-- Invité -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">
+            <i class="fas fa-sign-in-alt me-1"></i> Connexion
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register' %}">
+            <i class="fas fa-user-plus me-1"></i> Inscription
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<!-- Carousel -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'boutique/image/artem.jpg' %}" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Habits de qualité</h5>
+        <p>Nous vous offrons des vêtements de haute qualité.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'boutique/image/sac.jpg' %}" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>sac à main</h5>
+        <p>Nos sacs à main allient style et fonctionnalité.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'boutique/image/Bijoux.jpg' %}" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Bijoux</h5>
+        <p>Ajoutez une touche d'élégance à votre tenue avec nos bijoux uniques.</p>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<!-- Page content -->
+<div class="container mt-4 mb-5 fade-in">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-auto">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <h5><i class="fas fa-store me-2"></i>AMi-Shop</h5>
+        <p>Votre destination shopping en ligne pour des produits de qualité au meilleur prix.</p>
+        <div class="logo-icon footer-logo"></div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5><i class="fas fa-link me-2"></i>Liens utiles</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'panier' %}"><i class="fas fa-shopping-cart me-2"></i>Panier</a></li>
+          <li><a href="{% url 'contact' %}"><i class="fas fa-envelope me-2"></i>Contact</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'passer_commande' %}"><i class="fas fa-box me-2"></i>Commander</a></li>
+            <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+          {% else %}
+            <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Connexion</a></li>
+            <li><a href="{% url 'register' %}"><i class="fas fa-user-plus me-1"></i>Inscription</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5><i class="fas fa-phone me-2"></i>Contact</h5>
+        <p><i class="fas fa-envelope me-2"></i>Email : ami-shop.com@gmail.com</p>
+        <p><i class="fas fa-phone me-2"></i>Téléphone : +223 70 00 00 00</p>
+        <p>
+          <a href="#"><i class="fab fa-facebook me-2"></i>Facebook</a> |
+          <a href="#"><i class="fab fa-instagram me-2"></i>Instagram</a> |
+          <a href="#"><i class="fab fa-twitter me-2"></i>Twitter</a>
+        </p>
+      </div>
+    </div>
+    <hr style="border-color: #4b5563;">
+    <div class="text-center" style="color: #9ca3af;">&copy; 2025 AMi-Shop - Tous droits réservés</div>
+  </div>
+</footer>
+
+<!-- Drawer -->
+<div id="drawerMenu" class="drawer" aria-hidden="true">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeDrawer()" aria-label="Fermer le menu">&times;</a>
+  <a href="{% url 'accueil' %}" onclick="closeDrawer()"><i class="fas fa-home me-2"></i> Accueil</a>
+  <h6><i class="fas fa-folder me-2"></i> Catégories</h6>
+
+  {% for cat in categories %}
+    <details class="px-3" {% if forloop.first %}open{% endif %}>
+      <summary style="display:flex;align-items:center;gap:8px;">
+        <!-- Added category-specific icons with dynamic classes -->
+        <span class="category-icon category-{{ cat.nom|lower|slugify|default:'default' }}"></span>
+        <a href="{% url 'accueil' %}?categorie={{ cat.id }}" style="text-decoration:none;color:inherit;" onclick="closeDrawer(); event.stopPropagation();">
+          {{ cat.nom }}
+        </a>
+      </summary>
+
+      <ul class="list-unstyled ps-3 mb-2">
+        {% for prod in cat.produit_set.all %}
+          <li>
+            <a class="prod-link" href="{% url 'detail_produit' prod.id %}" onclick="closeDrawer()">
+              <i class="fas fa-circle me-2" style="font-size: 6px;"></i> {{ prod.nom }}
+            </a>
+          </li>
+        {% empty %}
+          <li class="text-muted"><i class="fas fa-exclamation-circle me-2"></i>Aucun produit</li>
+        {% endfor %}
+      </ul>
+    </details>
+  {% empty %}
+    <div class="px-3 text-muted"><i class="fas fa-info-circle me-2"></i>Aucune catégorie</div>
+  {% endfor %}
+
+  <hr class="my-3">
+  <a href="{% url 'panier' %}" onclick="closeDrawer()"><i class="fas fa-shopping-cart me-2"></i> Mon Panier</a>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'passer_commande' %}" onclick="closeDrawer()"><i class="fas fa-box me-2"></i> Commander</a>
+    <a href="{% url 'logout' %}" onclick="closeDrawer()"><i class="fas fa-sign-out-alt me-2"></i> Déconnexion</a>
+  {% else %}
+    <a href="{% url 'login' %}" onclick="closeDrawer()"><i class="fas fa-sign-in-alt me-2"></i> Connexion</a>
+    <a href="{% url 'register' %}" onclick="closeDrawer()"><i class="fas fa-user-plus me-2"></i> Inscription</a>
+  {% endif %}
+</div>
+
+<!-- Enhanced JavaScript with smooth animations -->
+<script>
+  function openDrawer() {
+    const drawer = document.getElementById("drawerMenu");
+    drawer.style.width = "320px";
+    drawer.setAttribute('aria-hidden','false');
+    
+    // Add backdrop
+    const backdrop = document.createElement('div');
+    backdrop.id = 'drawer-backdrop';
+    backdrop.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    document.body.appendChild(backdrop);
+    
+    // Animate backdrop
+    setTimeout(() => backdrop.style.opacity = '1', 10);
+    
+    backdrop.onclick = closeDrawer;
+  }
+  
+  function closeDrawer() {
+    const drawer = document.getElementById("drawerMenu");
+    const backdrop = document.getElementById('drawer-backdrop');
+    
+    drawer.style.width = "0";
+    drawer.setAttribute('aria-hidden','true');
+    
+    if (backdrop) {
+      backdrop.style.opacity = '0';
+      setTimeout(() => backdrop.remove(), 300);
+    }
+  }
+
+  // Close drawer on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeDrawer();
+    }
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

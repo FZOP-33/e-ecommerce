@@ -1,0 +1,667 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- ✅ Font Awesome CDN + Google Fonts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    /* Ajout de polices modernes et variables CSS */
+    :root {
+        --primary-color: #667eea;
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-color: #10b981;
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-light: #f8fafc;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    /* Container principal avec design moderne */
+    .product-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    /* Image produit avec effets avancés */
+    .product-image-container {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .product-image-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .product-image-container:hover::before {
+        opacity: 1;
+    }
+
+    .product-image {
+        max-height: 450px;
+        width: 100%;
+        object-fit: contain;
+        display: block;
+        margin: auto;
+        transition: var(--transition);
+        border-radius: 8px;
+    }
+
+    .product-image:hover {
+        transform: scale(1.05) rotate(1deg);
+    }
+
+    /* Card détails produit moderne */
+    .product-details-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        box-shadow: var(--shadow-md);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .product-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .product-description {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+
+    /* Prix avec design moderne */
+    .price-container {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+        border: 1px solid #bae6fd;
+    }
+
+    .price-original {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        text-decoration: line-through;
+    }
+
+    .price-current {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Infos pratiques avec icônes */
+    .product-info {
+        background: var(--bg-light);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+    }
+
+    .info-item i {
+        width: 20px;
+        margin-right: 0.75rem;
+        color: var(--primary-color);
+    }
+
+    /* Boutons modernes avec gradients */
+    .btn-modern {
+        padding: 0.875rem 2rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-modern:hover::before {
+        left: 100%;
+    }
+
+    .btn-add-cart {
+        background: var(--success-gradient);
+        color: white;
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-add-cart:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+
+    .btn-whatsapp {
+        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        color: white;
+        margin: 0.25rem;
+    }
+
+    .btn-whatsapp:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+
+    /* Section WhatsApp moderne */
+    .whatsapp-section {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin: 2rem 0;
+        border: 1px solid #86efac;
+    }
+
+    .whatsapp-title {
+        color: #166534;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Partage social moderne */
+    .social-share {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        margin: 2rem 0;
+    }
+
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin: 0 0.5rem;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+    }
+
+    .social-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+    .social-facebook { background: linear-gradient(135deg, #1877f2, #166fe5); color: white; }
+    .social-twitter { background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; }
+
+    /* Section avis moderne */
+    .reviews-section {
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-md);
+        margin: 3rem 0;
+    }
+
+    .review-box {
+        background: var(--bg-light);
+        border: 1px solid #e5e7eb;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+    }
+
+    .review-box:hover {
+        box-shadow: var(--shadow-sm);
+        transform: translateY(-2px);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .reviewer-name {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .review-date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .stars {
+        color: #fbbf24;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Formulaire avis moderne */
+    .review-form {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        border: 1px solid #e2e8f0;
+        margin-top: 2rem;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        padding: 0.75rem 1rem;
+        transition: var(--transition);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Cards produits similaires modernes */
+    .similar-products-section {
+        margin: 4rem 0;
+    }
+
+    .sim-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        height: 100%;
+        border: none;
+    }
+
+    .sim-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .sim-card img {
+        height: 200px;
+        width: 100%;
+        object-fit: contain;
+        padding: 1rem;
+        transition: var(--transition);
+    }
+
+    .sim-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .sim-card .card-body {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .sim-card .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .sim-card .price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .btn-outline-modern {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+    }
+
+    .btn-outline-modern:hover {
+        background: var(--primary-gradient);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Badge stock moderne */
+    .stock-badge {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        border: 1px solid #f59e0b;
+    }
+
+    .out-of-stock {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        border-color: #ef4444;
+    }
+
+    /* Responsive design amélioré */
+    @media (max-width: 768px) {
+        .product-container {
+            padding: 1rem 0;
+        }
+        
+        .product-details-card {
+            position: static;
+            margin-top: 2rem;
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.5rem;
+        }
+        
+        .price-current {
+            font-size: 2rem;
+        }
+        
+        .btn-modern {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .whatsapp-section {
+            text-align: center;
+        }
+        
+        .btn-whatsapp {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+    }
+</style>
+
+<div class="product-container">
+    <div class="container">
+        <!-- Ajout du bouton de retour vers l'accueil -->
+        <div class="mb-4">
+            <a href="{% url 'accueil' %}" class="btn-modern" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem;">
+                <i class="fas fa-arrow-left"></i>
+                Retour à l'accueil
+            </a>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Image produit avec container moderne -->
+            <div class="col-lg-6">
+                <div class="product-image-container">
+                    <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" class="product-image">
+                </div>
+            </div>
+
+            <!-- Détails produit avec card moderne -->
+            <div class="col-lg-6">
+                <div class="product-details-card">
+                    <h1 class="product-title">{{ produit.nom }}</h1>
+                    <p class="product-description">{{ produit.description }}</p>
+
+                    <!-- Prix avec design moderne -->
+                    <div class="price-container">
+                        {% if produit.prix_promo %}
+                            <div class="price-original">Prix initial : {{ produit.prix }} FCFA</div>
+                            <div class="price-current">{{ produit.prix_promo }} FCFA</div>
+                        {% else %}
+                            <div class="price-current">{{ produit.prix }} FCFA</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Infos pratiques avec icônes -->
+                    <div class="product-info">
+                        <div class="info-item">
+                            <i class="fas fa-box"></i>
+                            <span>Stock : {{ produit.stock }} disponible(s)</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Livraison : 48h</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-undo"></i>
+                            <span>Retour : Gratuit sous 7 jours</span>
+                        </div>
+                    </div>
+
+                    {% if produit.stock > 0 %}
+                        <!-- Formulaire d'ajout au panier moderne -->
+                        <form method="post" action="{% url 'ajouter_au_panier' produit.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-modern btn-add-cart w-100 mb-3">
+                                <i class="fas fa-cart-plus"></i>
+                                Ajouter au panier
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="stock-badge out-of-stock text-center w-100 mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Rupture de stock
+                        </div>
+                    {% endif %}
+
+                    <!-- Section WhatsApp moderne -->
+                    <div class="whatsapp-section">
+                        <div class="whatsapp-title">
+                            <i class="fab fa-whatsapp"></i>
+                            Discuter avec nous sur WhatsApp
+                        </div>
+                        <div class="d-flex flex-column flex-md-row gap-2">
+                            <a href="https://wa.me/33665743308?text=Bonjour 👋, je suis intéressé par le produit {{ produit.nom }} ({{ request.build_absolute_uri }})"
+                               target="_blank" class="btn-modern btn-whatsapp flex-fill">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp France (+33)
+                            </a>
+                            <a href="https://wa.me/22394228138?text=Bonjour 👋, je suis intéressé par le produit {{ produit.nom }} ({{ request.build_absolute_uri }})"
+                               target="_blank" class="btn-modern btn-whatsapp flex-fill">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp Mali (+223)
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Partage social moderne -->
+                    <div class="social-share text-center">
+                        <h6 class="mb-3">Partager ce produit :</h6>
+                        <a href="https://wa.me/?text={{ request.build_absolute_uri }}" target="_blank" class="social-icon social-whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="social-icon social-facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="social-icon social-twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section avis moderne -->
+        <div class="reviews-section">
+            <h3 class="mb-4">
+                <i class="fas fa-star text-warning me-2"></i>
+                Avis clients
+            </h3>
+            
+            {% if avis %}
+                {% for a in avis %}
+                <div class="review-box">
+                    <div class="review-header">
+                        <span class="reviewer-name">{{ a.utilisateur.username }}</span>
+                        <span class="review-date">{{ a.date|date:"d M Y H:i" }}</span>
+                    </div>
+                    <div class="stars mb-2">
+                        {% for i in "12345"|slice:":a.note"|make_list %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% for i in "12345"|slice:"a.note:"|make_list %}
+                            <i class="far fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <p class="mb-0">{{ a.commentaire }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucun avis pour ce produit. Soyez le premier à donner votre avis !</p>
+                </div>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <div class="review-form">
+                <h5 class="mb-3">
+                    <i class="fas fa-edit me-2"></i>
+                    Poster un avis
+                </h5>
+                <form method="post" action="{% url 'poster_avis' produit.id %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="note" class="form-label fw-semibold">Note (1-5 étoiles)</label>
+                            <select class="form-control" id="note" name="note" required>
+                                <option value="">Choisir une note</option>
+                                <option value="1">⭐ 1 étoile</option>
+                                <option value="2">⭐⭐ 2 étoiles</option>
+                                <option value="3">⭐⭐⭐ 3 étoiles</option>
+                                <option value="4">⭐⭐⭐⭐ 4 étoiles</option>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 étoiles</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="commentaire" class="form-label fw-semibold">Votre commentaire</label>
+                            <textarea class="form-control" id="commentaire" name="commentaire" rows="4" 
+                                      placeholder="Partagez votre expérience avec ce produit..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn-modern btn-add-cart">
+                                <i class="fas fa-paper-plane"></i>
+                                Publier mon avis
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-sign-in-alt fa-2x text-muted mb-3"></i>
+                    <p class="text-muted">Connectez-vous pour poster un avis sur ce produit.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Produits similaires avec design moderne -->
+        {% if produits_similaires %}
+        <div class="similar-products-section">
+            <h3 class="text-center mb-5">
+                <i class="fas fa-heart me-2 text-danger"></i>
+                Vous pourriez aussi aimer
+            </h3>
+            <div class="row g-4">
+                {% for sim in produits_similaires %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card sim-card">
+                        <img src="{{ sim.image.url }}" class="card-img-top" alt="{{ sim.nom }}">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ sim.nom }}</h6>
+                            <div class="price mb-3">
+                                {% if sim.prix_promo %}
+                                    {{ sim.prix_promo }} FCFA
+                                {% else %}
+                                    {{ sim.prix }} FCFA
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'detail_produit' sim.id %}" class="btn-outline-modern">
+                                <i class="fas fa-eye me-1"></i>
+                                Voir le produit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
