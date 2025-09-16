@@ -6,12 +6,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from regex import F
+from django.db.models import F
+
 import requests
 import stripe
 from django.urls import reverse
 
-from sympy import Sum
+
 
 from ecommerce import settings      
 from .models import AdresseLivraison, Avis, Commande, LigneCommande, Paiement, Produit, Panier, LignePanier
