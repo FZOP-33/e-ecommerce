@@ -1,20 +1,24 @@
-# ecommerce/settings.py
-
 import os
 from pathlib import Path
+from decouple import config
 import pymysql
-from decouple import config  # ← sécurise l'accès aux variables .env
+import dj_database_url
 
+# ⚠️ Si tu utilises MySQL avec PyMySQL
 pymysql.install_as_MySQLdb()
 
+# Chemin de base du projet
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ⚠️ Ne mets jamais la clé Django en dur non plus !
+# 🔐 Clé Django
 SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-secret")
 
-DEBUG = True
+# Mode debug
+DEBUG = config("DEBUG", default=True, cast=bool)
+
 ALLOWED_HOSTS = ["*"]
 
+# Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -22,9 +26,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "boutique",
+    "boutique",  # ton application
 ]
 
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -57,17 +62,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
+# Base de données (Render ou local)
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.postgresql",
+#        "NAME": config("DB_NAME", default="ecommerce_db"),
+#        "USER": config("DB_USER", default="postgres"),
+#        "PASSWORD": config("DB_PASSWORD", default="root1234"),
+#        "HOST": config("DB_HOST", default="localhost"),
+#        "PORT": config("DB_PORT", default="5432"),
+#    }
+#}
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "ecommerce_db",
-        "USER": "root",
-        "PASSWORD": "root1234",
-        "HOST": "localhost",
-        "PORT": "3306",
-    }
+    'default': dj_database_url.parse(config("DATABASE_URL"))
 }
 
+
+# Validation des mots de passe
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -75,17 +86,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Internationalisation
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# Static & Media
 STATIC_URL = "static/"
-
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ✅ Charge la clé Stripe depuis .env
+
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
