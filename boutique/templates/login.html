@@ -276,6 +276,7 @@
             .login-card {
                 padding: 2rem 1.5rem;
                 margin: 1rem;
+                max-width: 90vw;
             }
 
             .login-title {
@@ -284,12 +285,21 @@
 
             body {
                 padding: 10px;
+                min-height: 100vh;
+                min-height: 100dvh; /* Dynamic viewport height pour mobile */
+            }
+
+            .form-control {
+                font-size: 16px; /* Évite le zoom automatique sur iOS */
+                padding: 1rem;
             }
         }
 
         @media (max-width: 480px) {
             .login-card {
                 padding: 1.5rem 1rem;
+                margin: 0.5rem;
+                max-width: 95vw;
             }
 
             .login-title {
@@ -298,10 +308,64 @@
 
             .form-control {
                 padding: 0.75rem;
+                font-size: 16px;
             }
 
             .btn-login {
                 padding: 0.75rem 1.5rem;
+                min-height: 48px;
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+
+            .login-header {
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .login-card {
+                padding: 1rem 0.75rem;
+                margin: 0.25rem;
+            }
+
+            .login-title {
+                font-size: 1.25rem;
+            }
+
+            .login-subtitle {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .login-container {
+                max-width: 500px;
+            }
+
+            .login-card {
+                padding: 3.5rem 3rem;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .btn-login:hover {
+                transform: none;
+            }
+
+            .btn-login:active {
+                transform: scale(0.98);
+            }
+
+            .input-icon {
+                padding: 0.5rem;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
 
@@ -393,17 +457,22 @@
         togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
+
             // Toggle eye icon
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
+        });
+
+        togglePassword.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.click();
         });
 
         // Form submission with loading animation
         form.addEventListener('submit', function(e) {
             submitBtn.classList.add('loading');
             submitBtn.innerHTML = '<span style="opacity: 0;">Se connecter</span>';
-            
+
             // Remove loading state after 3 seconds if no redirect
             setTimeout(() => {
                 submitBtn.classList.remove('loading');
@@ -411,15 +480,24 @@
             }, 3000);
         });
 
-        // Input focus animations
         const inputs = document.querySelectorAll('.form-control');
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
+                if (window.innerWidth > 768) {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                }
             });
-            
+
             input.addEventListener('blur', function() {
                 this.parentElement.style.transform = 'scale(1)';
+            });
+
+            input.addEventListener('touchstart', function() {
+                if (this.getAttribute('readonly')) {
+                    this.removeAttribute('readonly');
+                    this.blur();
+                    this.focus();
+                }
             });
         });
 
@@ -428,6 +506,12 @@
         if (messages) {
             messages.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
     });
 </script>
 
