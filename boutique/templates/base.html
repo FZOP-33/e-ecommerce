@@ -499,7 +499,7 @@
 
 <!-- Drawer -->
 <div id="drawerMenu" class="drawer" aria-hidden="true">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeDrawer()" aria-label="Fermer le menu">&times;</a>
+  <a href="javascript:void(0)" class="closebtn" id="closeDrawerBtn" aria-label="Fermer le menu">&times;</a>
   <a href="{% url 'accueil' %}" onclick="closeDrawer()"><i class="fas fa-home me-2"></i> Accueil</a>
   <h6><i class="fas fa-folder me-2"></i> Catégories</h6>
 
@@ -546,11 +546,12 @@
   let startX = 0;
   let currentX = 0;
   let dragging = false;
+  let drawer = null;
 
   function openDrawer() {
     if (drawerOpen) return;
 
-    const drawer = document.getElementById("drawerMenu");
+    drawer = document.getElementById("drawerMenu");
     const body = document.body;
 
     const drawerWidth = window.innerWidth <= 768 ? Math.min(window.innerWidth * 0.85, 300) : 320;
@@ -578,8 +579,11 @@
     // Animate backdrop
     setTimeout(() => backdrop.style.opacity = '1', 10);
 
-    backdrop.onclick = closeDrawer;
-    backdrop.ontouchstart = closeDrawer;
+    backdrop.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      closeDrawer();
+    });
 
     drawerOpen = true;
   }
@@ -607,29 +611,94 @@
 
   function handleTouchStart(e) {
     if (!drawerOpen) return;
-    startX = e.touches[0].clientX;
+
+    const touch = e.touches[0];
+    startX = touch.clientX;
     dragging = true;
+
+    // Empêcher le scroll pendant le drag
+    e.preventDefault();
   }
 
   function handleTouchMove(e) {
     if (!dragging || !drawerOpen) return;
 
-    currentX = e.touches[0].clientX;
+    const touch = e.touches[0];
+    currentX = touch.clientX;
     const diffX = startX - currentX;
 
-    // Si on swipe vers la gauche de plus de 50px, fermer le drawer
-    if (diffX > 50) {
+    // Fermer si swipe vers la gauche de plus de 30px
+    if (diffX > 30) {
+      closeDrawer();
+      return;
+    }
+
+    // Empêcher le scroll pendant le drag
+    e.preventDefault();
+  }
+
+  function handleTouchEnd(e) {
+    if (!drawerOpen) return;
+
+    dragging = false;
+
+    // Si on a fait un petit swipe vers la gauche, fermer aussi
+    const diffX = startX - currentX;
+    if (diffX > 20) {
       closeDrawer();
     }
   }
 
-  function handleTouchEnd() {
-    dragging = false;
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    const drawerElement = document.getElementById('drawerMenu');
+    const closeBtn = document.getElementById('closeDrawerBtn');
 
-  document.addEventListener('touchstart', handleTouchStart, { passive: true });
-  document.addEventListener('touchmove', handleTouchMove, { passive: true });
-  document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    // Gestion tactile du bouton de fermeture
+    closeBtn.addEventListener('touchstart', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }, { passive: false });
+
+    closeBtn.addEventListener('touchend', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      closeDrawer();
+    }, { passive: false });
+
+    closeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      closeDrawer();
+    });
+
+    // Événements tactiles globaux
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    // Événements tactiles spécifiques au drawer
+    drawerElement.addEventListener('touchstart', function(e) {
+      if (!drawerOpen) return;
+      startX = e.touches[0].clientX;
+      dragging = true;
+    }, { passive: false });
+
+    drawerElement.addEventListener('touchmove', function(e) {
+      if (!dragging || !drawerOpen) return;
+
+      currentX = e.touches[0].clientX;
+      const diffX = startX - currentX;
+
+      // Fermer si swipe vers la gauche
+      if (diffX > 25) {
+        closeDrawer();
+      }
+    }, { passive: false });
+
+    drawerElement.addEventListener('touchend', function(e) {
+      dragging = false;
+    }, { passive: false });
+  });
 
   // Close drawer on escape key
   document.addEventListener('keydown', function(e) {
@@ -644,48 +713,57 @@
     }
   });
 
-  document.getElementById('drawerMenu').addEventListener('click', function(e) {
-    // Permettre la navigation normale des liens
-    if (e.target.tagName === 'A' && e.target.href) {
-      // Le lien fonctionnera normalement
-      return;
-    }
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#drawerMenu a').forEach(link => {
+      // Gestion des clics normaux
+      link.addEventListener('click', function(e) {
+        if (this.href && this.href !== 'javascript:void(0)' && !this.href.includes('#')) {
+          closeDrawer();
+        }
+      });
 
-  document.querySelectorAll('#drawerMenu a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      // S'assurer que les liens fonctionnent sur mobile
-      if (this.href && this.href !== 'javascript:void(0)') {
-        closeDrawer();
-        // Petit délai pour permettre la fermeture avant navigation
-        setTimeout(() => {
-          window.location.href = this.href;
-        }, 100);
-      }
-    });
+      // Gestion tactile spécifique pour mobile
+      link.addEventListener('touchstart', function(e) {
+        // Ajouter un effet visuel de pression
+        this.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
+      }, { passive: true });
 
-    link.addEventListener('touchend', function(e) {
-      e.stopPropagation();
-      if (this.href && this.href !== 'javascript:void(0)') {
-        closeDrawer();
-        setTimeout(() => {
-          window.location.href = this.href;
-        }, 100);
-      }
+      link.addEventListener('touchend', function(e) {
+        // Retirer l'effet visuel
+        this.style.backgroundColor = '';
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (this.href && this.href !== 'javascript:void(0)' && !this.href.includes('#')) {
+          closeDrawer();
+          // Navigation après fermeture
+          setTimeout(() => {
+            window.location.href = this.href;
+          }, 150);
+        }
+      }, { passive: false });
+
+      link.addEventListener('touchcancel', function(e) {
+        // Retirer l'effet visuel en cas d'annulation
+        this.style.backgroundColor = '';
+      }, { passive: true });
     });
   });
 
   // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
     });
   });
 </script>
