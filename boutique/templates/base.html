@@ -644,8 +644,35 @@
     }
   });
 
-  document.getElementById('drawerMenu').addEventListener('touchend', function(e) {
-    e.preventDefault();
+  document.getElementById('drawerMenu').addEventListener('click', function(e) {
+    // Permettre la navigation normale des liens
+    if (e.target.tagName === 'A' && e.target.href) {
+      // Le lien fonctionnera normalement
+      return;
+    }
+  });
+
+  document.querySelectorAll('#drawerMenu a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      // S'assurer que les liens fonctionnent sur mobile
+      if (this.href && this.href !== 'javascript:void(0)') {
+        closeDrawer();
+        // Petit délai pour permettre la fermeture avant navigation
+        setTimeout(() => {
+          window.location.href = this.href;
+        }, 100);
+      }
+    });
+
+    link.addEventListener('touchend', function(e) {
+      e.stopPropagation();
+      if (this.href && this.href !== 'javascript:void(0)') {
+        closeDrawer();
+        setTimeout(() => {
+          window.location.href = this.href;
+        }, 100);
+      }
+    });
   });
 
   // Smooth scroll for anchor links
