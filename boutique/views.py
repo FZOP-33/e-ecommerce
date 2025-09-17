@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-import regex as re
+from django.db.models import F
 
 import requests
 import stripe
