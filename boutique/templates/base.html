@@ -130,7 +130,7 @@
             padding-top: 60px; 
             z-index: 2000;
             border-right: 1px solid var(--border-color);
-            /* Ajout de propriétés pour éviter le scroll automatique */
+            /* Correction pour mobile - largeur fixe plus petite */
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
@@ -334,14 +334,20 @@
                 height: 35px;
             }
 
+            /* Drawer plus petit sur mobile - 250px max au lieu de 85% */
             .drawer {
-                /* Largeur responsive pour mobile */
-                width: 85vw !important;
-                max-width: 300px !important;
+                max-width: 250px !important;
             }
 
             .navbar .form-control {
                 font-size: 14px;
+            }
+        }
+
+        /* Styles pour très petits écrans */
+        @media (max-width: 480px) {
+            .drawer {
+                max-width: 220px !important;
             }
         }
 
@@ -554,7 +560,7 @@
     drawer = document.getElementById("drawerMenu");
     const body = document.body;
 
-    const drawerWidth = window.innerWidth <= 768 ? Math.min(window.innerWidth * 0.85, 300) : 320;
+    const drawerWidth = window.innerWidth <= 480 ? 220 : (window.innerWidth <= 768 ? 250 : 320);
     drawer.style.width = drawerWidth + "px";
     drawer.setAttribute('aria-hidden','false');
 
@@ -579,11 +585,15 @@
     // Animate backdrop
     setTimeout(() => backdrop.style.opacity = '1', 10);
 
-    backdrop.addEventListener('click', closeDrawer);
-    backdrop.addEventListener('touchstart', function(e) {
+    backdrop.addEventListener('click', function(e) {
       e.preventDefault();
       closeDrawer();
     });
+
+    backdrop.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      closeDrawer();
+    }, { passive: false });
 
     drawerOpen = true;
   }
@@ -615,9 +625,6 @@
     const touch = e.touches[0];
     startX = touch.clientX;
     dragging = true;
-
-    // Empêcher le scroll pendant le drag
-    e.preventDefault();
   }
 
   function handleTouchMove(e) {
@@ -627,14 +634,10 @@
     currentX = touch.clientX;
     const diffX = startX - currentX;
 
-    // Fermer si swipe vers la gauche de plus de 30px
-    if (diffX > 30) {
+    if (diffX > 20) {
       closeDrawer();
       return;
     }
-
-    // Empêcher le scroll pendant le drag
-    e.preventDefault();
   }
 
   function handleTouchEnd(e) {
@@ -642,9 +645,8 @@
 
     dragging = false;
 
-    // Si on a fait un petit swipe vers la gauche, fermer aussi
     const diffX = startX - currentX;
-    if (diffX > 20) {
+    if (diffX > 15) {
       closeDrawer();
     }
   }
@@ -653,15 +655,16 @@
     const drawerElement = document.getElementById('drawerMenu');
     const closeBtn = document.getElementById('closeDrawerBtn');
 
-    // Gestion tactile du bouton de fermeture
     closeBtn.addEventListener('touchstart', function(e) {
       e.stopPropagation();
       e.preventDefault();
+      this.style.color = '#ef4444';
     }, { passive: false });
 
     closeBtn.addEventListener('touchend', function(e) {
       e.stopPropagation();
       e.preventDefault();
+      this.style.color = '';
       closeDrawer();
     }, { passive: false });
 
@@ -672,32 +675,9 @@
     });
 
     // Événements tactiles globaux
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-    // Événements tactiles spécifiques au drawer
-    drawerElement.addEventListener('touchstart', function(e) {
-      if (!drawerOpen) return;
-      startX = e.touches[0].clientX;
-      dragging = true;
-    }, { passive: false });
-
-    drawerElement.addEventListener('touchmove', function(e) {
-      if (!dragging || !drawerOpen) return;
-
-      currentX = e.touches[0].clientX;
-      const diffX = startX - currentX;
-
-      // Fermer si swipe vers la gauche
-      if (diffX > 25) {
-        closeDrawer();
-      }
-    }, { passive: false });
-
-    drawerElement.addEventListener('touchend', function(e) {
-      dragging = false;
-    }, { passive: false });
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
   });
 
   // Close drawer on escape key
@@ -715,39 +695,22 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('#drawerMenu a').forEach(link => {
-      // Gestion des clics normaux
       link.addEventListener('click', function(e) {
         if (this.href && this.href !== 'javascript:void(0)' && !this.href.includes('#')) {
           closeDrawer();
         }
       });
 
-      // Gestion tactile spécifique pour mobile
-      link.addEventListener('touchstart', function(e) {
-        // Ajouter un effet visuel de pression
-        this.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
-      }, { passive: true });
-
       link.addEventListener('touchend', function(e) {
-        // Retirer l'effet visuel
-        this.style.backgroundColor = '';
-
         e.stopPropagation();
-        e.preventDefault();
 
         if (this.href && this.href !== 'javascript:void(0)' && !this.href.includes('#')) {
           closeDrawer();
-          // Navigation après fermeture
           setTimeout(() => {
             window.location.href = this.href;
-          }, 150);
+          }, 100);
         }
       }, { passive: false });
-
-      link.addEventListener('touchcancel', function(e) {
-        // Retirer l'effet visuel en cas d'annulation
-        this.style.backgroundColor = '';
-      }, { passive: true });
     });
   });
 
