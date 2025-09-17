@@ -1,33 +1,21 @@
-from datetime import timezone
 from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-# Create your views here.
-from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.db.models import F
+from django.db.models import Q, F, Sum
+from django.urls import reverse
 
 import requests
 import stripe
-from django.urls import reverse
-
-
 
 from ecommerce import settings
-from .models import AdresseLivraison, Avis, Commande, LigneCommande, Paiement, Produit, Panier, LignePanier
-from django.contrib import messages
-
+from .models import (
+    AdresseLivraison, Avis, Commande, LigneCommande, Paiement,
+    Produit, Panier, LignePanier, Categorie
+)
 from .forms import AdresseLivraisonForm, ContactForm, InscriptionForm
-
-from django.shortcuts import render, get_object_or_404
-from .utils import get_or_create_panier  # ta fonction utilitaire
-from .models import Produit, Categorie
-from django.contrib.auth.decorators import login_required
-
-
-from django.db.models import Q, Sum
-from django.http import JsonResponse
+from .utils import get_or_create_panier
 
 from boutique import models
 
