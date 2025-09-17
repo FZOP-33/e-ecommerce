@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.db.models import F
+import regex as re
 
 import requests
 import stripe
@@ -14,7 +14,7 @@ from django.urls import reverse
 
 
 
-from ecommerce import settings      
+from ecommerce import settings
 from .models import AdresseLivraison, Avis, Commande, LigneCommande, Paiement, Produit, Panier, LignePanier
 from django.contrib import messages
 
@@ -22,7 +22,7 @@ from .forms import AdresseLivraisonForm, ContactForm, InscriptionForm
 
 from django.shortcuts import render, get_object_or_404
 from .utils import get_or_create_panier  # ta fonction utilitaire
-from .models import Produit, Categorie 
+from .models import Produit, Categorie
 from django.contrib.auth.decorators import login_required
 
 
