@@ -87,9 +87,9 @@ else:
         }
     }
 
-    DATABASES = {
-       'default': dj_database_url.parse(config("DATABASE_URL"))
-    }
+    #DATABASES = {
+    #   'default': os.environ.get('DATABASE_URL'),
+    #}
 
 
 # Validation des mots de passe
