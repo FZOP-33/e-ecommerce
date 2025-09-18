@@ -3,6 +3,7 @@ from pathlib import Path
 from decouple import config
 import pymysql
 import dj_database_url
+from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
 from dotenv import load_dotenv
 load_dotenv()
 # ⚠️ Si tu utilises MySQL avec PyMySQL
@@ -19,6 +20,7 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ["https://e-ecommerce-production-85a7.up.railway.app"]
 # Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
