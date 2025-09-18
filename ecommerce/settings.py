@@ -3,7 +3,8 @@ from pathlib import Path
 from decouple import config
 import pymysql
 import dj_database_url
-
+from dotenv import load_dotenv
+load_dotenv()
 # ⚠️ Si tu utilises MySQL avec PyMySQL
 pymysql.install_as_MySQLdb()
 
@@ -63,16 +64,17 @@ TEMPLATES = [
 WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 # Base de données (Render ou local)
-#DATABASES = {
-#    "default": {
-#        "ENGINE": "django.db.backends.postgresql",
-#        "NAME": config("DB_NAME", default="ecommerce_db"),
-#        "USER": config("DB_USER", default="postgres"),
-#        "PASSWORD": config("DB_PASSWORD", default="root1234"),
-#        "HOST": config("DB_HOST", default="localhost"),
-#        "PORT": config("DB_PORT", default="5432"),
-#    }
-#}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT"),
+    }
+}
+
 DATABASES = {
     'default': dj_database_url.parse(config("DATABASE_URL"))
 }
