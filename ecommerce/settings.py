@@ -91,11 +91,13 @@ USE_TZ = True
 
 # Static & Media
 
-# chemin où collectstatic va regrouper tous les fichiers
+# Fichiers statiques (CSS, JS, etc.)
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = "static/"
-MEDIA_URL = "media/"
-MEDIA_ROOT = "/app/media"
+
+# Fichiers uploadés par les utilisateurs
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/app/media'
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
