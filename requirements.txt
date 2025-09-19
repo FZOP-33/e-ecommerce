@@ -9,6 +9,7 @@ CinetPay==0.0.1
 click==8.2.1
 cloudinary==1.44.1
 colorlog==6.9.0
+dj-config-url==0.1.1
 dj-database-url==3.0.1
 Django==5.2.6
 django-admin-interface==0.29.2
