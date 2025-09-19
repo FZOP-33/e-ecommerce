@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-secret")
 
 # Mode debug
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -70,10 +70,13 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 import dj_database_url
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL")  # Railway fournit ça automatiquement
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,   # garde les connexions ouvertes plus longtemps
+        ssl_require=True    # nécessaire pour PostgreSQL sur Railway
     )
 }
+
 
 # Validation des mots de passe
 AUTH_PASSWORD_VALIDATORS = [
