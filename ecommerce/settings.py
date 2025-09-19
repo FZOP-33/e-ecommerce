@@ -65,7 +65,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "ecommerce.wsgi.application"
-DB_LIVE=os.environ.get("DB_LIVE")
+
 
 # Database
 DATABASES = {
@@ -73,31 +73,6 @@ DATABASES = {
         default=os.environ.get("DATABASE_URL")  # Railway fournit DATABASE_URL
     )
 }
-
-#if DB_LIVE in ["False", False]:
-
-    #DATABASES = {
-     #       'default': {
-     #           'ENGINE': 'django.db.backends.sqlite3',
-     #          'NAME': BASE_DIR / 'db.sqlite3',
-     #       }
-      #  }
-#else:
-
-#    DATABASES = {
-#        "default": {
-#            "ENGINE": "django.db.backends.postgresql",
-#            "NAME": os.environ.get("DB_NAME"),
-#            "USER": os.environ.get("DB_USER"),
-#            "PASSWORD": os.environ.get("DB_PASSWORD"),
-#            "HOST": os.environ.get("DB_HOST"),
-#            "PORT": os.environ.get("DB_PORT"),
-#        }
-#    }
-
-    #DATABASES = {
-    #   'default': os.environ.get('DATABASE_URL'),
-    #}
 
 
 # Validation des mots de passe
@@ -121,7 +96,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
-MEDIA_ROOT = "boutique/media"
+MEDIA_ROOT = "/app/media"
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
