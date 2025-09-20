@@ -96,14 +96,13 @@ USE_TZ = True
 # Static & Media
 
 # Fichiers statiques (CSS, JS, etc.)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Fichiers uploadés par les utilisateurs
-MEDIA_URL = '/media/'
-
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
-  # ok, le volume est monté
+
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
