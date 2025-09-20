@@ -20,7 +20,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [""]
+#CSRF_TRUSTED_ORIGINS = [""]
 # Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
