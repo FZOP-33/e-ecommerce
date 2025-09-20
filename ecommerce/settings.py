@@ -20,7 +20,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://ecommerce-production-8165.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = [""]
 # Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -101,11 +101,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Fichiers uploadés par les utilisateurs
 MEDIA_URL = '/media/'
-if DEBUG:
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
-else:
-    MEDIA_ROOT = '/media'  # Railway Free
-    os.makedirs(MEDIA_ROOT, exist_ok=True)  # ok, le volume est monté
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
+  # ok, le volume est monté
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
