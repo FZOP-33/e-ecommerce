@@ -104,7 +104,7 @@ MEDIA_URL = '/media/'
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
 else:
-    MEDIA_ROOT = '/media/'  # Railway Free
+    MEDIA_ROOT = '/media'  # Railway Free
     os.makedirs(MEDIA_ROOT, exist_ok=True)  # ok, le volume est monté
 
 # Default primary key
