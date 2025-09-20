@@ -95,15 +95,19 @@ USE_TZ = True
 
 # Static & Media
 
-# Fichiers statiques (CSS, JS, etc.)
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
-# Fichiers uploadés par les utilisateurs
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
-
-
+if DEBUG:
+    # Local
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    os.makedirs(MEDIA_ROOT, exist_ok=True)
+else:
+    # Prod Railway
+    STATIC_ROOT = 'staticfiles/'  # ou le chemin que tu veux pour collectstatic
+    MEDIA_ROOT = 'media/'          # DOIT correspondre au volume attaché
+    os.makedirs(MEDIA_ROOT, exist_ok=True)
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
