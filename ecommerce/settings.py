@@ -16,11 +16,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-secret")
 
 # Mode debug
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://ecommerce-production-d7b2.up.railway.app"]
+#CSRF_TRUSTED_ORIGINS = ["https://ecommerce-production-0113.up.railway.app"]
 # Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -70,11 +70,14 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,   # garde les connexions ouvertes plus longtemps
-        ssl_require=True    # nécessaire pour PostgreSQL sur Railway
-    )
+    "default":{
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD":os.environ.get("DB_PASSWORD"),
+        "HOST":os.environ.get("DB_HOST"),
+        "PORT":os.environ.get("DB_PORT"),
+    }
 }
 
 
@@ -85,7 +88,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Internationalisation
 LANGUAGE_CODE = "en-us"
@@ -95,19 +97,15 @@ USE_TZ = True
 
 # Static & Media
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+# chemin où collectstatic va regrouper tous les fichiers
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = "static/"
 
-if DEBUG:
-    # Local
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    os.makedirs(MEDIA_ROOT, exist_ok=True)
-else:
-    # Prod Railway
-    STATIC_ROOT = 'staticfiles/'  # ou le chemin que tu veux pour collectstatic
-    MEDIA_ROOT = 'media/'          # DOIT correspondre au volume attaché
-    os.makedirs(MEDIA_ROOT, exist_ok=True)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "produits/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
