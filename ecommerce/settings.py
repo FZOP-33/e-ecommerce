@@ -108,7 +108,7 @@ MEDIA_URL = '/media/'
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
 else:
-    MEDIA_ROOT = "/media/"  # le volume persistant Railway
+    MEDIA_ROOT = "/app/media"  # le volume persistant Railway
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
