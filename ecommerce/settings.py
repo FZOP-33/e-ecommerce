@@ -103,7 +103,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/app/media'
 # S’assurer que le dossier existe
-os.makedirs(MEDIA_ROOT, exist_ok=True)
+#os.makedirs(MEDIA_ROOT, exist_ok=True)
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
