@@ -20,7 +20,7 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://ecommerce-production-f7ff.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://ecommerce-production-b0ba.up.railway.app"]
 # Applications Django
 INSTALLED_APPS = [
     "django.contrib.admin",
