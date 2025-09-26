@@ -103,7 +103,7 @@ STATIC_URL = "/static/"
 if DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # local
 else:
-    STATIC_ROOT = "/mnt/static"  # volume Railway
+    STATIC_ROOT = "/mn/static"  # volume Railway
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -112,7 +112,7 @@ MEDIA_URL = '/media/'
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # local
 else:
-    MEDIA_ROOT = "/mnt/media"
+    MEDIA_ROOT = "/mn/media"
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
